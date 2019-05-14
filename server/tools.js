@@ -23,8 +23,16 @@ exports.postToCorpus = function (wordsFromReq, dataStore) {
 
 exports.getAnagrams = function (wordFromReq, dataStore) {
     let currentWord = wordFromReq;
-    let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
-
-    console.log(typeof dataStore[currentHash])
+    let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode();
     return dataStore[currentHash]
+}
+
+exports.deleteSingleWord = function (wordFromReq, dataStore) {
+    let currentWord = wordFromReq;
+    let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode();
+
+    //filter is particularly useful because it works whether or not the word is in the corpus
+    dataStore[currentHash] = dataStore[currentHash].filter(m => {
+        return m !== currentWord;
+    });
 }

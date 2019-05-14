@@ -26,15 +26,16 @@ app.get('/anagrams/:word.json', (req, res) => {
 });
 
 app.delete('/words/:word.json', (req, res) => {
-    res.status(200).send({
-        result: "resource deleted"
-    })
+
+    tools.deleteSingleWord(req.params.word, corpus)
+    res.status(204).send()
 })
 
 app.delete('/words.json', (req, res) => {
-    res.status(200).send({
-        result: "Deleted all words from corpus"
-    })
+
+    corpus = {}
+
+    res.status(204).send()
 });
 
 app.listen(PORT, () => {
