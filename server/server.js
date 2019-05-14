@@ -4,7 +4,7 @@ var corpus = {}
 
 const app = express();
 app.use(express.json());
-const PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 
 app.post('/words.json', (req, res) => {
