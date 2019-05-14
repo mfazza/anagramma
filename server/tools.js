@@ -24,7 +24,10 @@ exports.postToCorpus = function (wordsFromReq, dataStore) {
 exports.getAnagrams = function (wordFromReq, dataStore) {
     let currentWord = wordFromReq;
     let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode();
-    return dataStore[currentHash]
+
+    let result = dataStore[currentHash] === undefined ? [] : dataStore[currentHash]
+
+    return result
 }
 
 exports.deleteSingleWord = function (wordFromReq, dataStore) {
