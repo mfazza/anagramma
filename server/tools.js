@@ -5,7 +5,6 @@ exports.hashCode = String.prototype.hashCode = function () {
     for (i = 0; i < this.length; i++) {
         char = this.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
-
         return hash;
     }
 }
@@ -20,4 +19,12 @@ exports.postToCorpus = function (wordsFromReq, dataStore) {
             dataStore[currentHash].push(currentWord)
         }
     }
+}
+
+exports.getAnagrams = function (wordFromReq, dataStore) {
+    let currentWord = wordFromReq;
+    let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
+
+    console.log(typeof dataStore[currentHash])
+    return dataStore[currentHash]
 }

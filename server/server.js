@@ -14,15 +14,14 @@ app.post('/words.json', (req, res) => {
     tools.postToCorpus(req.body.words, corpus)
 
     res.status(201).send({
-        message: "Resource creat",
-        corpus: corpus
+        message: "Resource created: the words from the request have been added to the corpus."
     })
 });
 
 app.get('/anagrams/:word.json', (req, res) => {
+
     res.status(200).send({
-        words: ["word1", "word2", "word3"],
-        query: req.params.word
+        anagrams: tools.getAnagrams(req.params.word, corpus)
     })
 });
 
