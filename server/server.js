@@ -20,9 +20,17 @@ app.post('/words.json', (req, res) => {
 
 app.get('/anagrams/:word.json', (req, res) => {
 
-    res.status(200).send({
-        anagrams: tools.getAnagrams(req.params.word, corpus)
-    })
+
+    if (req.query.limit != undefined && !(req.query.limit instanceof Object)) {
+        res.status(200).send({
+            anagrams: tools.getAnagrams(req.params.word, corpus).slice(0, req.query.limit)
+        })
+    } else {
+        res.status(200).send({
+            anagrams: tools.getAnagrams(req.params.word, corpus)
+        })
+    }
+
 });
 
 app.delete('/words/:word.json', (req, res) => {
@@ -34,7 +42,6 @@ app.delete('/words/:word.json', (req, res) => {
 app.delete('/words.json', (req, res) => {
 
     corpus = {}
-
     res.status(204).send()
 });
 
