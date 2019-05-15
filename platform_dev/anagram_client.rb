@@ -1,6 +1,7 @@
 require 'json'
 require 'optparse'
 require 'net/http'
+require 'uri'
 
 class AnagramClient
   def initialize(args=[])

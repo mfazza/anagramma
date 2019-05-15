@@ -44,6 +44,12 @@ app.delete('/words.json', (req, res) => {
     res.status(204).send()
 });
 
+app.get('/save/words.json', (req, res) => {
+    //save to file
+    tools.writeToFile(corpus)
+    res.status(201).send()
+})
+
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
 });
