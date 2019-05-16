@@ -6,12 +6,28 @@ const app = express();
 app.use(express.json());
 var PORT = process.env.PORT || 3000;
 
+//MongoDB connection
+// const db = require('./mongomodule');
+// db.connect()
+//     .then(() => console.log('database connected'))
+//     .catch((e) => {
+//         console.error(e);
+//         // Always hard exit on a database connection error
+//         process.exit(1);
+//     });
+
 
 app.post('/words.json', (req, res) => {
 
-    //error handling: if req.body.words is undefined, handle it
-    //Invoking functions using JS objects passes by reference
     tools.postToCorpus(req.body.words, corpus)
+    res.status(201).send({
+        message: "Resource created: the words from the request have been added to the corpus."
+    })
+});
+
+app.get('/build/words.json', (req, res) => {
+
+    tools.postToMongoDBBInitial()
 
     res.status(201).send({
         message: "Resource created: the words from the request have been added to the corpus."
@@ -45,8 +61,13 @@ app.delete('/words.json', (req, res) => {
 });
 
 app.get('/save/words.json', (req, res) => {
-    //save to file
+
     tools.writeToFile(corpus)
+    res.status(201).send()
+})
+
+app.get('/load/words.json', async (req, res) => {
+    corpus = await tools.loadAllWords()
     res.status(201).send()
 })
 

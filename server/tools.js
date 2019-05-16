@@ -1,4 +1,6 @@
 var fs = require('fs');
+const path = require('path');
+var datagiven = require('../datagiven.json')
 
 //  A better approach to generating a unique hash for each word: it uses bitwise operations instead of prime factorization.
 exports.hashCode = String.prototype.hashCode = function () {
@@ -44,8 +46,25 @@ exports.deleteSingleWord = function (wordFromReq, dataStore) {
 }
 
 exports.writeToFile = function (dataStore) {
-    fs.writeFile('datastore.json', JSON.stringify(dataStore), function (err) {
+    fs.writeFile('tore.json', JSON.stringify(dataStore), function (err) {
         if (err) throw err;
         console.log('Saved!');
     })
+}
+
+exports.loadAllWords = function (dataStore) {
+
+    return new Promise(function (resolve, reject) {
+        fs.readFile(path.join(__dirname, '../data/datastore.json'), function (err, data) {
+            if (err) {
+                return reject(err)
+            }
+
+            res = JSON.parse(data);
+            return resolve(res)
+
+        });
+
+    })//end of promise
+
 }
