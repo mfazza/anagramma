@@ -124,10 +124,6 @@ app.get('/m/anagrams/atleast/words.json', (req, res) => {
 
 app.delete('/m/anagrams/deleteSimilar/:word.json', (req, res) => {
 
-
-    console.log(req.params.word);
-
-
     if (req.params.word != undefined) {
         db.deleteWordAndAnagrams(req.params.word)
             .then(() => res.status(200).send({ message: "Your request was completed successfully" }))
@@ -141,6 +137,25 @@ app.delete('/m/anagrams/deleteSimilar/:word.json', (req, res) => {
         })
     }
 
+})
+
+//  @POST determine if all words are anagrams of each other
+app.post('/anagrams/check/words.json', (req, res) => {
+
+    var hash = 0;
+
+    for (var i = 0; i < req.body.words.length; i++) {
+        let currentWord = req.body.words[i];
+        let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
+
+
+        if (i != 0 && currentHash != hash) {
+            res.status(200).send({ message: "The words sent are not all anagrams of each other." })
+            break;
+        }
+        hash = currentHash;
+    }
+    res.status(200).send({ message: "The words sent are all anagrams of each other." })
 })
 
 //  @GET all anagrams for a particular word
