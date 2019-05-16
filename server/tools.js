@@ -53,13 +53,11 @@ exports.writeToFile = function (dataStore) {
 }
 
 exports.loadAllWords = function (dataStore) {
-
     return new Promise(function (resolve, reject) {
         fs.readFile(path.join(__dirname, '../data/datastore.json'), function (err, data) {
             if (err) {
                 return reject(err)
             }
-
             res = JSON.parse(data);
             return resolve(res)
 

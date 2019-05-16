@@ -7,22 +7,29 @@ app.use(express.json());
 var PORT = process.env.PORT || 3000;
 
 //MongoDB connection
-// const db = require('./mongomodule');
-// db.connect()
-//     .then(() => console.log('database connected'))
-//     .catch((e) => {
-//         console.error(e);
-//         // Always hard exit on a database connection error
-//         process.exit(1);
-//     });
+const db = require('./mongotools');
+db.connect()
+    .then(() => console.log('database connected'))
+    .catch((e) => {
+        console.error(e);
+        // Always hard exit on a database connection error
+        process.exit(1);
+    });
 
-
+//  @POST route for corpus
 app.post('/words.json', (req, res) => {
 
-    tools.postToCorpus(req.body.words, corpus)
+    mongotools.postToCorpus(req.body.words, corpus)
     res.status(201).send({
         message: "Resource created: the words from the request have been added to the corpus."
     })
+});
+
+//  @POST route for mongo
+app.post('/m/words.json', (req, res) => {
+
+    db.postToMongoDB(req.body.words).then(() => res.status(201).send(req.body.words + " have been added"))
+        .catch(err => console.log(err))
 });
 
 app.get('/build/words.json', (req, res) => {
