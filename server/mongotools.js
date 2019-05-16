@@ -105,7 +105,34 @@ exports.deleteSingleWord = function (wordFromReq) {
 
 }
 
+exports.getMostAnagrams = function () {
 
+    return new Promise(function (resolve, reject) {
+        getMongo().db(dbName).collection(colName).aggregate([
+            {
+                '$project': {
+                    'aSize': {
+                        '$size': '$anagrams'
+                    },
+                    'anagrams': '$anagrams'
+                }
+            }, {
+                '$sort': {
+                    'aSize': -1
+                }
+            }
+        ]).toArray(
+
+            function (err, res) {
+                if (err) {
+                    return reject(err)
+                }
+                return resolve(res)
+            }
+        )
+    })
+
+}
 
 
 

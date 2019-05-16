@@ -77,6 +77,34 @@ app.post('/m/words.json', (req, res) => {
     //db.postToMongoDB2(req.body.words)
 });
 
+// @DELETE route for MongoDB
+app.delete('/m/words.json', (req, res) => {
+
+    db.deleteAll()
+        .then((res.status(200).send()))
+        .catch(err => res.status(404).send())
+});
+
+//@DELETE single word from MongoDB
+app.delete('/m/words/:word.json', (req, res) => {
+
+    db.deleteSingleWord(req.params.word)
+        .then((res.status(200).send()))
+        .catch(err => res.status(404).send())
+})
+
+//  @GET words with most anagrams
+app.get('/m/anagrams/most/words.json', (req, res) => {
+
+    db.getMostAnagrams()
+        .then((resolution) => res.status(200).send({ "Words with most anagrams": resolution[0]['anagrams'] }))
+        .catch(err => {
+            console.log(err)
+            res.status(404).send({ anagrams: [] })
+        })
+
+})
+
 //  @GET all anagrams for a particular word
 //  Note that & won't work with curl
 app.get('/m/anagrams/:word.json', (req, res) => {
@@ -117,19 +145,3 @@ app.get('/m/anagrams/:word.json', (req, res) => {
             })
     }
 });
-
-// @DELETE route for MongoDB
-app.delete('/m/words.json', (req, res) => {
-
-    db.deleteAll()
-        .then((res.status(200).send()))
-        .catch(err => res.status(404).send())
-});
-
-//@DELETE single word from MongoDB
-app.delete('/m/words/:word.json', (req, res) => {
-
-    db.deleteSingleWord(req.params.word)
-        .then((res.status(200).send()))
-        .catch(err => res.status(404).send())
-})
