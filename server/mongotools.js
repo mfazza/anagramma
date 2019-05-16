@@ -152,11 +152,22 @@ exports.getAnagramsWithAtLeast = function (atLeast) {
             }
         )
     })
-
 }
 
+exports.deleteWordAndAnagrams = function (wordFromReq) {
+    let currentWord = wordFromReq;
+    let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
 
+    return new Promise(function (resolve, reject) {
+        getMongo().db(dbName).collection(colName).findOneAndDelete({ "hash": currentHash }, function (err, res) {
+            if (err) {
+                return reject(err)
+            }
+            return resolve(res)
+        })
+    })
 
+}
 
 
 

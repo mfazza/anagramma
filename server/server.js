@@ -122,6 +122,27 @@ app.get('/m/anagrams/atleast/words.json', (req, res) => {
 
 })
 
+app.delete('/m/anagrams/deleteSimilar/:word.json', (req, res) => {
+
+
+    console.log(req.params.word);
+
+
+    if (req.params.word != undefined) {
+        db.deleteWordAndAnagrams(req.params.word)
+            .then(() => res.status(200).send({ message: "Your request was completed successfully" }))
+            .catch(err => {
+                console.log(err)
+                res.status(404).send({ message: "Your request was not completed successfully" })
+            })
+    } else {
+        res.status(404).send({
+            message: "Please, specify the word to be deleted along with all its anagrams."
+        })
+    }
+
+})
+
 //  @GET all anagrams for a particular word
 //  Note that & won't work with curl
 app.get('/m/anagrams/:word.json', (req, res) => {
