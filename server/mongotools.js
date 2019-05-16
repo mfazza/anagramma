@@ -1,5 +1,8 @@
 const uri = require('../config/keys').mongoURI;
 var MongoClient = require('mongodb').MongoClient;
+const dbName = "test"
+const colName = "words";
+
 
 let connection = null;
 
@@ -33,38 +36,20 @@ var getMongo = exports.getMongo = () => {
     return connection;
 }
 
+
 var queryMongoDB = exports.queryMongoDB = function (query) {
     return new Promise(function (resolve, reject) {
-        getMongo().db('test').collection('words').find(query).toArray(
+        getMongo().db(dbName).collection(colName).find(query).toArray(
 
             function (err, res) {
                 if (err) {
-                    // Reject the Promise with an error
                     return reject(err)
                 }
-                // Resolve (or fulfill) the promise with data
                 return resolve(res)
             }
         )
     }
     )
-}
-
-exports.postToMongoDBBInitial = function () {
-
-
-    var datastore = JSON.parse(fs.readFileSync('/Users/MattFazza/Code/ibotta/data/datastore.json'));
-
-    Object.keys(datastore).forEach(function (key) {
-        mongoModule.getMongo().db('test').collection('words').insertOne({ "hash": key, "anagrams": datastore[key] }, (err, res) => {
-            if (err) {
-                console.log("This is the key: " + key + " and this is the word: " + datastore[key]);
-                throw err
-            }
-        })
-    })
-
-    console.log("I'm done");
 }
 
 exports.postToMongoDB = async function (wordsFromReq) {
@@ -76,9 +61,9 @@ exports.postToMongoDB = async function (wordsFromReq) {
         res = await queryMongoDB({ "hash": currentHash });
 
         if ((res === undefined || res.length == 0)) {
-            getMongo().db('test').collection('words').insertOne({ "hash": currentHash, "anagrams": [currentWord] }, (err, res) => { if (err) throw err });
+            getMongo().db(dbName).collection(colName).insertOne({ "hash": currentHash, "anagrams": [currentWord] }, (err, res) => { if (err) throw err });
         } else if (!(res[0]["anagrams"].some(word => word === currentWord))) {
-            getMongo().db('test').collection('words').updateOne({ "hash": currentHash }, { $push: { "anagrams": currentWord } }, (err, res) => {
+            getMongo().db(dbName).collection(colName).updateOne({ "hash": currentHash }, { $push: { "anagrams": currentWord } }, (err, res) => {
                 if (err) {
                     console.log("This is the key: " + currentHash + " and this is the word: " + currentWord);
                     throw err
@@ -89,3 +74,53 @@ exports.postToMongoDB = async function (wordsFromReq) {
 
     }
 }
+
+
+exports.deleteAll = function () {
+    return new Promise(function (resolve, reject) {
+        getMongo().db(dbName).collection(colName).drop(
+            function (err, res) {
+                if (err) {
+                    return reject(err)
+                }
+                return resolve(res)
+            }
+        )
+    }
+    )
+}
+
+exports.deleteSingleWord = function (wordFromReq) {
+    let currentWord = wordFromReq;
+    let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
+
+    return new Promise(function (resolve, reject) {
+        getMongo().db(dbName).collection(colName).findOneAndUpdate({ "hash": currentHash }, { $pull: { "anagrams": currentWord } }, function (err, res) {
+            if (err) {
+                return reject(err)
+            }
+            return resolve(res)
+        })
+    })
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

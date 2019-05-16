@@ -19,23 +19,7 @@ db.connect()
 //  @POST route for corpus
 app.post('/words.json', (req, res) => {
 
-    mongotools.postToCorpus(req.body.words, corpus)
-    res.status(201).send({
-        message: "Resource created: the words from the request have been added to the corpus."
-    })
-});
-
-//  @POST route for mongo
-app.post('/m/words.json', (req, res) => {
-
-    db.postToMongoDB(req.body.words).then(() => res.status(201).send(req.body.words + " have been added"))
-        .catch(err => console.log(err))
-});
-
-app.get('/build/words.json', (req, res) => {
-
-    tools.postToMongoDBBInitial()
-
+    tools.postToCorpus(req.body.words, corpus)
     res.status(201).send({
         message: "Resource created: the words from the request have been added to the corpus."
     })
@@ -67,6 +51,7 @@ app.delete('/words.json', (req, res) => {
     res.status(204).send()
 });
 
+//general purpose routes
 app.get('/save/words.json', (req, res) => {
 
     tools.writeToFile(corpus)
@@ -81,3 +66,54 @@ app.get('/load/words.json', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
 });
+
+
+//  routes for MongoDB
+//  @POST route for mongo
+app.post('/m/words.json', (req, res) => {
+
+    db.postToMongoDB(req.body.words).then(() => res.status(201).send(req.body.words + " have been added"))
+        .catch(err => console.log(err))
+    //db.postToMongoDB2(req.body.words)
+});
+
+//  @GET all anagrams for a particular word
+app.get('/m/anagrams/:word.json', (req, res) => {
+
+    console.log(req.query);
+
+
+    if (req.query.limit != undefined && !(req.query.limit instanceof Object)) {
+        let wordHash = req.params.word.toLowerCase().split("").sort().join("").hashCode()
+        db.queryMongoDB({ "hash": wordHash })
+            .then((resolution) => res.status(200).send({ anagrams: resolution[0]['anagrams'].slice(0, req.query.limit) }))
+            .catch(err => {
+                console.log(err)
+                res.status(404).send({ anagrams: [] })
+            })
+    } else {
+        let wordHash = req.params.word.toLowerCase().split("").sort().join("").hashCode()
+        db.queryMongoDB({ "hash": wordHash })
+            .then((resolution) => res.status(200).send({ anagrams: resolution[0]['anagrams'] }))
+            .catch(err => {
+                console.log(err)
+                res.status(404).send({ anagrams: [] })
+            })
+    }
+});
+
+// @DELETE route for MongoDB
+app.delete('/m/words.json', (req, res) => {
+
+    db.deleteAll()
+        .then((res.status(200).send()))
+        .catch(err => res.status(404).send())
+});
+
+//@DELETE single word from MongoDB
+app.delete('/m/words/:word.json', (req, res) => {
+
+    db.deleteSingleWord(req.params.word)
+        .then((res.status(200).send()))
+        .catch(err => res.status(404).send())
+})
