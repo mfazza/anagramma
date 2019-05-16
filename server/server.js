@@ -100,8 +100,25 @@ app.get('/m/anagrams/most/words.json', (req, res) => {
         .then((resolution) => res.status(200).send({ "Words with most anagrams": resolution[0]['anagrams'] }))
         .catch(err => {
             console.log(err)
-            res.status(404).send({ anagrams: [] })
+            res.status(404).send({ "Words with most anagrams": [] })
         })
+
+})
+
+app.get('/m/anagrams/atleast/words.json', (req, res) => {
+
+    if (req.query.atleast != undefined) {
+        db.getAnagramsWithAtLeast(req.query.atleast - 1)
+            .then((resolution) => res.status(200).send({ "List of Anagrams matching the criteria": resolution }))
+            .catch(err => {
+                console.log(err)
+                res.status(404).send({ message: "Your request was not completed successfully" })
+            })
+    } else {
+        res.status(404).send({
+            message: "Please specify the minimum number of anagrams with ?atleast=number"
+        })
+    }
 
 })
 

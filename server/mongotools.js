@@ -120,6 +120,8 @@ exports.getMostAnagrams = function () {
                 '$sort': {
                     'aSize': -1
                 }
+            }, {
+                '$limit': 1
             }
         ]).toArray(
 
@@ -134,6 +136,24 @@ exports.getMostAnagrams = function () {
 
 }
 
+exports.getAnagramsWithAtLeast = function (atLeast) {
+
+    let findField = "anagrams." + atLeast
+    return new Promise(function (resolve, reject) {
+        getMongo().db(dbName).collection(colName).find({ [findField]: { $exists: true } }, { fields: { _id: 0, hash: 0 } }
+
+        ).toArray(
+
+            function (err, res) {
+                if (err) {
+                    return reject(err)
+                }
+                return resolve(res)
+            }
+        )
+    })
+
+}
 
 
 
