@@ -78,21 +78,37 @@ app.post('/m/words.json', (req, res) => {
 });
 
 //  @GET all anagrams for a particular word
+//  Note that & won't work with curl
 app.get('/m/anagrams/:word.json', (req, res) => {
 
-    console.log(req.query);
+    let wordHash = req.params.word.toLowerCase().split("").sort().join("").hashCode()
 
-
-    if (req.query.limit != undefined && !(req.query.limit instanceof Object)) {
-        let wordHash = req.params.word.toLowerCase().split("").sort().join("").hashCode()
+    if (req.query.limit != undefined && req.query.proper != undefined) {
+        db.queryMongoDB({ "hash": wordHash })
+            .then((resolution) => res.status(200).send({
+                anagrams: resolution[0]['anagrams'].filter(function (word) { return word === word.toLowerCase(); }).slice(0, req.query.limit)
+            }))
+            .catch(err => {
+                console.log(err)
+                res.status(404).send({ anagrams: [] })
+            })
+    } else if (req.query.limit != undefined) {
         db.queryMongoDB({ "hash": wordHash })
             .then((resolution) => res.status(200).send({ anagrams: resolution[0]['anagrams'].slice(0, req.query.limit) }))
             .catch(err => {
                 console.log(err)
                 res.status(404).send({ anagrams: [] })
             })
+    } else if (req.query.proper != undefined) {
+        db.queryMongoDB({ "hash": wordHash })
+            .then((resolution) => res.status(200).send({
+                anagrams: resolution[0]['anagrams'].filter(function (word) { return word === word.toLowerCase(); })
+            }))
+            .catch(err => {
+                console.log(err)
+                res.status(404).send({ anagrams: [] })
+            })
     } else {
-        let wordHash = req.params.word.toLowerCase().split("").sort().join("").hashCode()
         db.queryMongoDB({ "hash": wordHash })
             .then((resolution) => res.status(200).send({ anagrams: resolution[0]['anagrams'] }))
             .catch(err => {
