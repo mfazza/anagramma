@@ -76,7 +76,7 @@ class TestCases < Test::Unit::TestCase
     #pend # delete me
 
     res = @client.delete('/words.json')
-
+    sleep(2)
     assert_equal('204', res.code, "Unexpected response code")
 
     # should fetch an empty body
@@ -93,6 +93,7 @@ class TestCases < Test::Unit::TestCase
     #pend # delete me
 
     3.times do
+      sleep(2)
       res = @client.delete('/words.json')
 
       assert_equal('204', res.code, "Unexpected response code")
@@ -113,16 +114,15 @@ class TestCases < Test::Unit::TestCase
 
     # delete the word
     res = @client.delete('/words/dear.json')
-
     assert_equal('204', res.code, "Unexpected response code")
 
+    sleep(2)
     # expect it not to show up in results
     res = @client.get('/anagrams/read.json')
 
     assert_equal('200', res.code, "Unexpected response code")
 
     body = JSON.parse(res.body)
-
     assert_equal(['dare'], body['anagrams'])
   end
 end

@@ -7,7 +7,7 @@ app.use(express.json());
 var PORT = process.env.PORT || 3000;
 
 //MongoDB connection
-const db = require('./mongotools');
+const db = require('./servertools');
 db.connect()
     .then(() => console.log('database connected'))
     .catch((e) => {
