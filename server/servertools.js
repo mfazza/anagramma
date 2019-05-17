@@ -16,7 +16,7 @@ var options = {
 };
 
 module.exports.connect = () => new Promise((resolve, reject) => {
-    MongoClient.connect(uri, options, function (err, db) {
+    MongoClient.connect(process.env.MONGO_URI, options, function (err, db) {
         if (err) { reject(err); return; };
         resolve(db);
         connection = db;
