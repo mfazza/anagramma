@@ -1,10 +1,12 @@
-const uri = require('../config/keys').mongoURI;
+const keys = require('../config/keys');
 var MongoClient = require('mongodb').MongoClient;
 const dbName = "test"
 const colName = "words";
 
-console.log(process.env.MONGODB_URI);
-
+var uri = keys.mongoURI;
+if (process.env.MONGODB_URI != undefined) {
+    uri = process.env.MONGODB_URI;
+}
 
 let connection = null;
 
@@ -18,7 +20,7 @@ var options = {
 };
 
 module.exports.connect = () => new Promise((resolve, reject) => {
-    MongoClient.connect(process.env.MONGODB_URI, options, function (err, db) {
+    MongoClient.connect(uri, options, function (err, db) {
         if (err) { reject(err); return; };
         resolve(db);
         connection = db;
