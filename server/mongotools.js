@@ -7,18 +7,12 @@ const colName = "words";
 let connection = null;
 
 var options = {
-    db: {
-        numberOfRetries: 2
-    },
-    server: {
-        auto_reconnect: true,
-        poolSize: 40,
-        socketOptions: {
-            connectTimeoutMS: 500
-        }
-    },
-    replSet: {},
-    mongos: {}
+
+    poolSize: 50,
+    reconnectTries: 2,
+    auto_reconnect: true,
+    connectTimeoutMS: 500,
+    useNewUrlParser: true
 };
 
 module.exports.connect = () => new Promise((resolve, reject) => {
@@ -52,7 +46,7 @@ var queryMongoDB = exports.queryMongoDB = function (query) {
     )
 }
 
-exports.postToMongoDB = async function (wordsFromReq) {
+exports.postToMongoDB2 = async function (wordsFromReq) {
 
     for (var i = 0; i < wordsFromReq.length; i++) {
         let currentWord = wordsFromReq[i];
@@ -75,6 +69,15 @@ exports.postToMongoDB = async function (wordsFromReq) {
     }
 }
 
+exports.postToMongoDB = function (wordFromReq, query) {
+    return new Promise(function (resolve, reject) {
+        getMongo().db(dbName).collection(colName).findOneAndUpdate(query, { $push: { "anagrams": wordFromReq } }, { upsert: true, returnOriginal: false }, function (err, res) {
+            err ? reject(err) : resolve(res);
+        }
+        )
+    }
+    )
+}
 
 exports.deleteAll = function () {
     return new Promise(function (resolve, reject) {

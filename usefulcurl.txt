@@ -1,0 +1,3 @@
+curl -i -X POST -H "Content-Type: application/json" -d '{ "words": ["read", "dear", "dare"] }' http://localhost:3000/words.json
+
+curl -i http://localhost:3000/anagrams/read.json
