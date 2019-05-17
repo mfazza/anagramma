@@ -3,6 +3,8 @@ var MongoClient = require('mongodb').MongoClient;
 const dbName = "test"
 const colName = "words";
 
+console.log(process.env.MONGO_URI);
+
 
 let connection = null;
 
