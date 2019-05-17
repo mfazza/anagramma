@@ -111,7 +111,7 @@ class TestCases < Test::Unit::TestCase
 
   def test_deleting_single_word
     #pend # delete me
-
+    sleep(2)
     # delete the word
     res = @client.delete('/words/dear.json')
     assert_equal('204', res.code, "Unexpected response code")
@@ -123,6 +123,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal('200', res.code, "Unexpected response code")
 
     body = JSON.parse(res.body)
-    assert_equal(['dare'], body['anagrams'])
+    assert_equal(['dare', 'read'], body['anagrams'])
   end
 end
