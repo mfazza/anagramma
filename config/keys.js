@@ -3,3 +3,4 @@ module.exports = {
     secret: "secret",
     mongoURI1: "mongodb://heroku:rufio1@ds257485.mlab.com:57485/anagrammer"
 }
+
