@@ -3,7 +3,7 @@ var MongoClient = require('mongodb').MongoClient;
 const dbName = "test"
 const colName = "words";
 
-console.log(process.env.MONGO_URI);
+console.log(process.env.MONGODB_URI);
 
 
 let connection = null;
@@ -18,7 +18,7 @@ var options = {
 };
 
 module.exports.connect = () => new Promise((resolve, reject) => {
-    MongoClient.connect(process.env.MONGO_URI, options, function (err, db) {
+    MongoClient.connect(process.env.MONGODB_URI, options, function (err, db) {
         if (err) { reject(err); return; };
         resolve(db);
         connection = db;
