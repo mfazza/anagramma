@@ -23,14 +23,56 @@ app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
 });
 
+
+
+//  POST route to insert words into the corpus 
+//  ARGS: json array such as{ "json": ["read", "dear", "dare"] } included in the body of the request
+//  RES: 201 or 404 codes
+//  Maps to 'insert' in ../routes/api/words.js
 app.post('/words.json', words.insert);
+
+//  DELETE route to delete all words from the corpus
+//  ARGS: none
+//  RES: 204 or 404 codes
+//  Maps to 'dropAll in ../routes/api/words.js
 app.delete('/words.json', words.dropAll);
+
+//  DELETE route to delete all words from the corpus
+//  ARGS: word to be deleted as in '/words/wordtobedeleted.json'
+//  RES: 204 or 404 codes
+//  Maps to 'dropOne in ../routes/api/words.js
 app.delete('/words/:word.json', words.dropOne);
 
+
+
+//  GET route to retrieve words with most anagrams
+//  ARGS: none
+//  RES: 200 -> { "Words with most anagrams": ['read', 'dare', 'dear'] } OR 404 code
+//  Maps to 'most' in ../routes/api/anagrams.js
 app.get('/anagrams/most.json', anagrams.most);
+
+//  GET route to retrieve words with a certain minimum number of anagrams
+//  ARGS: atleast parameter in url as in '/anagrams/minimum.json?atleast=2'
+//  RES: 200 -> { "List of Anagrams matching the criteria": ['read', 'dare', 'dear'] } OR 404
+//  Maps to 'wAtLeast' in ../routes/api/anagrams.js
 app.get('/anagrams/minimum.json', anagrams.wAtLeast); //atleast is the parameter
+
+//  GET route to retrieve anagrams of an specific word it has options to limit the number of results and to exclude proper nouns
+//  ARGS: specific word as in /anagrams/specificword.json
+//  OPT ARGS: limit as in /anagrams/someword.json?limit=1 and proper as in /anagrams/someword.json?proper=1
+//  RES: 200 -> { anagrams: ['read', 'dare', 'dear'] } OR 200 { anagrams: []}
+//  Maps to 'get' in ../routes/api/anagrams.js
 app.get('/anagrams/:word.json', anagrams.get);
+
+//  POST route that returns wheter or not the words sent are anagrams of each other
+//  ARGS: json array such as{ "json": ["read", "dear", "dare"] } included in the body of the request
+//  RES: 200 -> { message: "The words sent are not all anagrams of each other." } OR 200 -> message: "The words sent are all anagrams of each other."
+//  Maps to 'checkIfAnagrams' in ../routes/api/anagrams.js
 app.post('/anagrams/words.json', anagrams.checkIfAnagrams);
+
+//  DELETE route that delete a word and all its matching anagrams
+//  ARGS: word to have all itself and all its anagrams deleted as in '/anagrams/wordtobedeleted.json'
+//  RES: 204 or 404 codes OR 404 -> { message: "Please, specify the word to be deleted along with all its anagrams."}
 app.delete('/anagrams/:word.json', anagrams.dropMatchingAnagrams);
 
 
