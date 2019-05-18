@@ -56,7 +56,7 @@ app.get('/anagrams/most.json', anagrams.most);
 //  ARGS: atleast parameter in url as in '/anagrams/minimum.json?atleast=2'
 //  RES: 200 -> { "List of Anagrams matching the criteria": ['read', 'dare', 'dear'] } OR 404
 //  Maps to 'wAtLeast' in ../routes/api/anagrams.js
-app.get('/anagrams/minimum.json', anagrams.wAtLeast); //atleast is the parameter
+app.get('/anagrams/minimumnumber.json', anagrams.wAtLeast); //atleast is the parameter
 
 //  GET route to retrieve anagrams of an specific word it has options to limit the number of results and to exclude proper nouns
 //  ARGS: specific word as in /anagrams/specificword.json
