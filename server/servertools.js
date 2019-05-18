@@ -35,13 +35,6 @@ var getMongo = exports.getMongo = () => {
     return connection;
 }
 
-exports.hashCode = String.prototype.hashCode = function () {
-    var hash = 0, i, char;
-    if (this.length == 0) return hash;
-    for (i = 0; i < this.length; i++) {
-        char = this.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        //        hash = hash & hash;
-    }
-    return hash;
+exports.unscramble = String.prototype.unscramble = function () {
+    return this.toLowerCase().split("").sort().join("")
 }

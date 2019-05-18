@@ -39,11 +39,10 @@ var queryMongoDB = exports.queryMongoDB = function (query) {
 }
 
 function deleteWordAndAnagrams(wordFromReq) {
-    let currentWord = wordFromReq;
-    let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
+    let combination = wordFromReq.unscramble()
 
     return new Promise(function (resolve, reject) {
-        db.getMongo().db(db.dbName).collection(db.colName).findOneAndDelete({ "hash": currentHash }, function (err, res) {
+        db.getMongo().db(db.dbName).collection(db.colName).findOneAndDelete({ "combination": combination }, function (err, res) {
             err ? reject(err) : resolve(res);
         })
     })
@@ -73,10 +72,10 @@ exports.wAtLeast = (req, res) => {
 
 exports.get = (req, res) => {
 
-    let wordHash = req.params.word.toLowerCase().split("").sort().join("").hashCode()
+    let combination = req.params.word.unscramble()
 
     if (req.query.limit != undefined && req.query.proper != undefined) {
-        queryMongoDB({ "hash": wordHash })
+        queryMongoDB({ "combination": combination })
             .then((resolution) => res.status(200).send({
                 anagrams: resolution[0]['anagrams'].slice(0, req.query.limit).sort().filter(function (word) { return word === word.toLowerCase(); })
             }))
@@ -85,14 +84,14 @@ exports.get = (req, res) => {
                 res.status(200).send({ anagrams: [] })
             })
     } else if (req.query.limit != undefined) {
-        queryMongoDB({ "hash": wordHash })
+        queryMongoDB({ "combination": combination })
             .then((resolution) => res.status(200).send({ anagrams: resolution[0]['anagrams'].slice(0, req.query.limit).sort() }))
             .catch(err => {
                 console.log(err)
                 res.status(200).send({ anagrams: [] })
             })
     } else if (req.query.proper != undefined) {
-        queryMongoDB({ "hash": wordHash })
+        queryMongoDB({ "combination": combination })
             .then((resolution) => res.status(200).send({
                 anagrams: resolution[0]['anagrams'].filter(function (word) { return word === word.toLowerCase(); }).sort()
             }))
@@ -101,7 +100,7 @@ exports.get = (req, res) => {
                 res.status(200).send({ anagrams: [] })
             })
     } else {
-        queryMongoDB({ "hash": wordHash })
+        queryMongoDB({ "combination": combination })
             .then((resolution) => res.status(200).send({ anagrams: resolution[0]['anagrams'].sort() }))
             .catch(err => {
                 console.log(err)

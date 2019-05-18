@@ -22,11 +22,10 @@ function deleteAll() {
 }
 
 function deleteSingleWord(wordFromReq) {
-    let currentWord = wordFromReq;
-    let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
+    let combination = wordFromReq.unscramble()
 
     return new Promise(function (resolve, reject) {
-        db.getMongo().db(db.dbName).collection(db.colName).findOneAndUpdate({ "hash": currentHash }, { $pull: { "anagrams": currentWord } }, function (err, res) {
+        db.getMongo().db(db.dbName).collection(db.colName).findOneAndUpdate({ "combination": combination }, { $pull: { "anagrams": wordFromReq } }, function (err, res) {
             err ? reject(err) : resolve(res);
         })
     })
@@ -36,14 +35,13 @@ function deleteSingleWord(wordFromReq) {
 exports.insert = async (req, res) => {
 
     for (var i = 0; i < req.body.words.length; i++) {
-        let currentWord = req.body.words[i];
-        let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
+        let combination = req.body.words[i].unscramble()
 
-        await postToMongoDB(currentWord, { "hash": currentHash })
+        await postToMongoDB(req.body.words[i], { "combination": combination })
             .then(() => { })
             .catch(err => {
                 console.log(err)
-                console.log(currentWord + " was not inserted properly")
+                console.log(req.body.words[i] + " was not inserted properly")
                 res.status(404).send()
             })
     }
