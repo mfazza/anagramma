@@ -15,6 +15,48 @@ My original idea was to save everything in memory since we're only dealing with 
   
 ## Trade-offs
 
-Writing the application in Node is a great experience.  The Express framework allowed me to focus on the logic and not so much on verbose syntax.  At the same time, I was given tests in Ruby.  Ruby is a synchronous language and the tests run synchronously.  JavaScript (and subsequently Node) is an asynchronous language, so some additional set up and adjustments were necessary to make the tests run properly.
+Writing the application in Node is comfortable.  The Express framework allowed me to focus on the logic and not so much on verbose syntax.  At the same time, I was given tests in Ruby.  Ruby is a synchronous language and the tests run synchronously.  JavaScript (and subsequently Node) is an asynchronous language, so some additional set up and adjustments were necessary to make the tests run properly.  It was challenging to master promises and asynchronous programming for this as well, but I feel my Node skills are sharper than ever after this.
 
 Another point of trade-off is the data store itself.  Consuming words, digesting a hash, and inserting them into the database is extremely slow in comparisson to using the memory.  In a production environment where all the words would already be in the store, inserting fast wouldn't be as important.  The database also adds another layer of complexity.  That is a good and a bad thing.  This layer of complexity offers flexibility and a lot of room to expand the project, the data store limits the project in that sense -although it's much simpler to deal with.  The database also requires a provider, and another network point that needs to be considered. 
+
+## Architecture
+
+This Node application uses the Express framework to set up routes that are used as endpoints.  Requests made to the endpoints get processed by the Node application.  The Node application queries an instance of MongoDB and returns the results as JSON responses.
+
+## Project Structure
+
+There are two main folders in the project: *server* and *routes*.  
+-server contains the Node application itself and a set of tools used throughout the project.
+-routes/api contains the methods used by the routes.
+--*anagrams contains all methods associated with routes under /anagrams/
+--*words contains all methods associated with routes under /words/
+--*stats contains all methods associated with routes under /stats/
+
+An endpoint request calls the Node app in /server -> that calls an export module in /routes/api/ -> that calls a function that queries the db (in the same file)
+
+Endpoints are structured that way to make the code as modulas as possible.  One function queries, another function sends the HTTP response.
+
+## Project Tools
+
+-VSCode
+-MongoDB Compass
+-GitHub 
+-Trello
+
+## Project Management
+
+Although I wrote this by myself, I had to be organized in order to get everything done.  Once I figured out what technology I wanted to use, I immediately broke down the project in accomplishable chunks.  I made a little scrum board for myself on Trello and worked on those "user stories".  I gave myself a week to complete this, but I couldn't work on it all the time.  It was crucial having the board to guide me through the development process.  Commits related to the stories can be found in the comments of those stories.
+
+The version control model I chose is Trunk based since I was the only person working on the project. 
+
+## Challenges
+
+I knew how to use promises in JavaScript before.  Using promises with multi query operations was challenging.  I think I achieved some sort of mastery after doing this.  Now I'm very comfortable with the asynchronous model.
+
+Another challenge was writing the queries for the additional features.  I hadn't used the aggregation framework so intensely before, but it was part of my design to delegate the logic to the queries.  MongoDB Compass was an amazing tool that helped me write most of those queries.
+
+I also spent a lot of time dealing with Heroku's hosting issues.  I wanted to use environment variables for my credentials, but Heroku doesn't have a plugin for MongoDB Atlas -they do have one for mLab.  I figured that out and now everything works smoothly.  
+
+I still wanted to provide a way to run the app locally, so in the end I had to expose my credentials.  I created one just for the project and it's safe to share.  Another option would be to containerize the application and I would do it if I had time.
+
+## 
