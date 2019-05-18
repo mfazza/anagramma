@@ -1,11 +1,8 @@
 const db = require('../../server/servertools');
 
-const dbName = "test"
-const colName = "words";
-
 function getMostAnagrams() {
     return new Promise(function (resolve, reject) {
-        db.getMongo().db(dbName).collection(colName).aggregate([
+        db.getMongo().db(db.dbName).collection(db.colName).aggregate([
             { '$project': { 'aSize': { '$size': '$anagrams' }, 'anagrams': '$anagrams' } }
             , { '$sort': { 'aSize': -1 } },
             { '$limit': 1 }
@@ -21,7 +18,7 @@ function getAnagramsWithAtLeast(atLeast) {
 
     let findField = "anagrams." + atLeast
     return new Promise(function (resolve, reject) {
-        db.getMongo().db(dbName).collection(colName).find({ [findField]: { $exists: true } }, { fields: { _id: 0, hash: 0 } }
+        db.getMongo().db(db.dbName).collection(db.colName).find({ [findField]: { $exists: true } }, { fields: { _id: 0, hash: 0 } }
         ).toArray(
             function (err, res) {
                 err ? reject(err) : resolve(res);
@@ -32,13 +29,9 @@ function getAnagramsWithAtLeast(atLeast) {
 
 var queryMongoDB = exports.queryMongoDB = function (query) {
     return new Promise(function (resolve, reject) {
-        db.getMongo().db(dbName).collection(colName).find(query).toArray(
-
+        db.getMongo().db(db.dbName).collection(db.colName).find(query).toArray(
             function (err, res) {
-                if (err) {
-                    return reject(err)
-                }
-                return resolve(res)
+                err ? reject(err) : resolve(res);
             }
         )
     }
@@ -50,7 +43,7 @@ function deleteWordAndAnagrams(wordFromReq) {
     let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
 
     return new Promise(function (resolve, reject) {
-        db.getMongo().db(dbName).collection(colName).findOneAndDelete({ "hash": currentHash }, function (err, res) {
+        db.getMongo().db(db.dbName).collection(db.colName).findOneAndDelete({ "hash": currentHash }, function (err, res) {
             err ? reject(err) : resolve(res);
         })
     })
@@ -85,7 +78,7 @@ exports.get = (req, res) => {
     if (req.query.limit != undefined && req.query.proper != undefined) {
         queryMongoDB({ "hash": wordHash })
             .then((resolution) => res.status(200).send({
-                anagrams: resolution[0]['anagrams'].filter(function (word) { return word === word.toLowerCase(); }).slice(0, req.query.limit).sort()
+                anagrams: resolution[0]['anagrams'].slice(0, req.query.limit).sort().filter(function (word) { return word === word.toLowerCase(); })
             }))
             .catch(err => {
                 console.log(err)

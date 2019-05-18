@@ -1,11 +1,8 @@
 const db = require('../../server/servertools');
 
-const dbName = "test"
-const colName = "words";
-
 function postToMongoDB(wordFromReq, query) {
     return new Promise(function (resolve, reject) {
-        db.getMongo().db(dbName).collection(colName).findOneAndUpdate(query, { $push: { "anagrams": wordFromReq } }, { upsert: true, returnOriginal: false }, function (err, res) {
+        db.getMongo().db(db.dbName).collection(db.colName).findOneAndUpdate(query, { $addToSet: { "anagrams": wordFromReq }, }, { upsert: true, returnOriginal: false }, function (err, res) {
             err ? reject(err) : resolve(res);
         }
         )
@@ -15,7 +12,7 @@ function postToMongoDB(wordFromReq, query) {
 
 function deleteAll() {
     return new Promise(function (resolve, reject) {
-        db.getMongo().db(dbName).collection(colName).drop(
+        db.getMongo().db(db.dbName).collection(db.colName).drop(
             function (err, res) {
                 err ? reject(err) : resolve(res);
             }
@@ -25,13 +22,11 @@ function deleteAll() {
 }
 
 function deleteSingleWord(wordFromReq) {
-    console.log(wordFromReq);
-
     let currentWord = wordFromReq;
     let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
 
     return new Promise(function (resolve, reject) {
-        db.getMongo().db(dbName).collection(colName).findOneAndUpdate({ "hash": currentHash }, { $pull: { "anagrams": currentWord } }, function (err, res) {
+        db.getMongo().db(db.dbName).collection(db.colName).findOneAndUpdate({ "hash": currentHash }, { $pull: { "anagrams": currentWord } }, function (err, res) {
             err ? reject(err) : resolve(res);
         })
     })

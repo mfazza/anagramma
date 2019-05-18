@@ -41,8 +41,7 @@ class TestCases < Test::Unit::TestCase
 
     assert_not_nil(body['anagrams'])
 
-    #expected_anagrams = %w(dare dear) was corrected to the line below
-    expected_anagrams = %w(dare dear read)
+    expected_anagrams = %w(dare dear)
     assert_equal(expected_anagrams, body['anagrams'].sort)
   end
 

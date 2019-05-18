@@ -1,10 +1,13 @@
 const keys = require('../config/keys');
 var MongoClient = require('mongodb').MongoClient;
+
 const dbName = "test"
 const colName = "words";
+exports.dbName = dbName;
+exports.colName = colName
 
 var uri = process.env.MONGODB_URI || keys.mongoURI;
-console.log(uri);
+//console.log(uri);
 
 let connection = null;
 

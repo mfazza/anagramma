@@ -4,6 +4,7 @@ const servertools = require('./servertools');
 const words = require('../routes/api/words');
 const anagrams = require('../routes/api/anagrams');
 const db = require('./servertools');
+const stats = require('../routes/api/stats');
 
 
 const app = express();
@@ -70,9 +71,28 @@ app.get('/anagrams/:word.json', anagrams.get);
 //  Maps to 'checkIfAnagrams' in ../routes/api/anagrams.js
 app.post('/anagrams/words.json', anagrams.checkIfAnagrams);
 
-//  DELETE route that delete a word and all its matching anagrams
+//  DELETE route that deletes a word and all its matching anagrams
 //  ARGS: word to have all itself and all its anagrams deleted as in '/anagrams/wordtobedeleted.json'
 //  RES: 204 or 404 codes OR 404 -> { message: "Please, specify the word to be deleted along with all its anagrams."}
 app.delete('/anagrams/:word.json', anagrams.dropMatchingAnagrams);
 
 
+//  GET route to retrieve the total number of words in the corpus
+//  ARGS: none
+//  RES: 200 -> { "Total words": 6 } OR 404
+app.get('/stats/total.json', stats.totalWords);
+
+//  GET route to retrieve the average word length in the corpus
+//  ARGS: none
+//  RES: 200 -> { "Average word length": 6 } OR 404
+app.get('/stats/average.json', stats.average);
+
+//  GET route to retrieve the length of the smallest word in the corpus
+//  ARGS: none
+//  RES: 200 -> { "Minimum word length": 6, "Word": "a" } OR 404
+app.get('/stats/min.json', stats.min);
+
+//  GET route to retrieve the length of the biggest word in the corpus
+//  ARGS: none
+//  RES: 200 -> { "Maximum word length": 6, "Word": "pneumonoultramicroscopicsilicovolcanoconiosis" } OR 404
+app.get('/stats/max.json', stats.max);
