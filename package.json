@@ -19,9 +19,9 @@
   "author": "Matt Fazza",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mattfazza/Project_Tokyo/issues"
+    "url": "https://github.com/mattfazza/Anagramma/issues"
   },
-  "homepage": "https://github.com/mattfazza/Project_Tokyo#readme",
+  "homepage": "https://github.com/mattfazza/Anagramma#readme",
   "dependencies": {
     "express": "^4.16.4",
     "mongodb": "^3.2.4"
