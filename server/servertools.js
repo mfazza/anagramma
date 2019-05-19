@@ -1,8 +1,8 @@
 const keys = require('../config/keys');
 var MongoClient = require('mongodb').MongoClient;
 
-const dbName = "test"
-const colName = "words";
+const dbName = "anagramma"
+const colName = "anagrams";
 exports.dbName = dbName;
 exports.colName = colName
 
