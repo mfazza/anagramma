@@ -14,30 +14,32 @@ An alternative version with 170,000+ words exists here: ```https://anagramma2.he
 - [Requirements](#Requirements)
 - [Approach](#Approach)
 - [Trade-offs](#Trade-offs)
+- [Testing](#Testing)
 - [Project-Tools](#Project-tools)
 - [Project Management](#Project-Management)
 - [Challenges](#Challenges)
 - [What I would do differently in a professional environment](#What-I-would-do-differently-in-a-professional-environment)
 - [Future-Features](#Future-Features)
-- [Testing](#Testing)
 
 ## How to use it
 
 Access the following endpoints with the following HTTP Requests: 
 
-- `GET https://anagramma.herokuapp.com/`: points the user to this page.
+- &ast; `GET https://anagramma.herokuapp.com/`: points the user to this page. 
 - `POST https://anagramma.herokuapp.com/words.json`: takes in a JSON array to be added to the database.  Array limit is about 8150 (8162 is the maximum I was able to insert at once)
 - `DELETE https://anagramma.herokuapp.com/words.json`: this will delete all words from the database.
 - `DELETE https://anagramma.herokuapp.com/words/:word.json`: this will delete a particular word from the database.
-- `GET https://anagramma.herokuapp.com/anagrams/most.json`: this will retrieve the words with most anagrams.
-- `GET https://anagramma.herokuapp.com/anagrams/minimumnumber.json?atleast=5'`: this will get words with at least the number specified in the argument.
+- &ast; `GET https://anagramma.herokuapp.com/anagrams/most.json`: this will retrieve the words with most anagrams. 
+- &ast; `GET https://anagramma.herokuapp.com/anagrams/minimumnumber.json?atleast=5'`: this will get words with at least the number specified in the argument. 
 - `GET https://anagramma.herokuapp.com/anagrams/:word.json`: this will get anagrams for a particular word in the database.
-- `POST https://anagramma.herokuapp.com/anagrams/words.json`: takes in a JSON array of words and checks if they are all anagrams of each other.
-- `DELETE https://anagramma.herokuapp.com/anagrams/:word.json`: deletes a word and all its anagrams from the database.
-- `GET https://anagramma.herokuapp.com/stats/total.json`: returns the total amount of words in the database.
-- `GET https://anagramma.herokuapp.com/stats/average.json`: returns the average length of all words in the database.
-- `GET https://anagramma.herokuapp.com/stats/min.json`: returns the smallest word in the database.
-- `GET https://anagramma.herokuapp.com/stats/max.json`: returns the biggest word in the database.
+- &ast; `POST https://anagramma.herokuapp.com/anagrams/words.json`: takes in a JSON array of words and checks if they are all anagrams of each other. 
+- &ast; `DELETE https://anagramma.herokuapp.com/anagrams/:word.json`: deletes a word and all its anagrams from the database. 
+- &ast; `GET https://anagramma.herokuapp.com/stats/total.json`: returns the total amount of words in the database. 
+- &ast; `GET https://anagramma.herokuapp.com/stats/average.json`: returns the average length of all words in the database. 
+- &ast; `GET https://anagramma.herokuapp.com/stats/min.json`: returns the smallest word in the database. 
+- &ast; `GET https://anagramma.herokuapp.com/stats/max.json`: returns the biggest word in the database. 
+
+&ast; These are additional or optional features
 
 To run the app locally:
 ```
@@ -125,6 +127,23 @@ Writing the application in Node is fit for the web.  The way JavaSript deals wit
 
 Another point of trade-off is the data store itself.  Consuming words, converting them to a sequence of characters, and inserting them into the database is extremely slow in comparisson to using the memory.  In a production environment where all the words would already be in the store, inserting fast wouldn't be as important.  The database also adds another layer of complexity.  That is a good and a bad thing.  This layer of complexity offers flexibility and a lot of room to expand the project, the data store limits the project in that sense -although it's much simpler to deal with.  The database also requires a provider, and another network point that needs to be considered. 
 
+## Testing
+
+
+A testing framework (anagram_client.rb) and a test suite(anagram_test.rb) were provided.  I've spoken about it before, but because Ruby runs synchronously and Node runs asynchronously, the tests are very inconsistent.  Running the test multiple times with no changes to the test nor the application yields different results a lot of the time.  What I did to mitigate that issue was making the Ruby test to wait a few seconds after a request in an attempt to let it complete properly.  That added a bit of consistency, but not enough to do away with all problems.  
+
+Consider the following scenario that shows up in the tests: 
+- Ruby test sends a POST request to post 3 words to the corpus
+- Node app receives the request and starts working on it
+- Ruby test sends a request to GET the 3 words in the corpus
+- Node app is still working on the post request, not all words have been posted yet, but Node does receive the second request and completes it before the post request
+- Ruby receives the response for the GET request.  At the time the request was made, only two words were in the corpus.  The GET request returned 2 words, instead of 3.
+
+Yes.  Most of the time, waiting a little bit between requests will do away with this problem, but for tests with multiple requests, it's hard to achieve some control.  That being said, I had all my tests pass a lot of the time.  So for the purposes of testing, whenever the race conditions are overcome, the application is compliant with all tests.  The application is "correct" and passes all tests.
+
+PS: I found what I consider to be an error in the tests, and here, I felt free to modify it.  At work, I'd connect with the person who wrote the test first and check with them before suggesting the correction.
+
+
 ## Project Tools
 
 * VSCode
@@ -183,19 +202,3 @@ Using benchmark-bigo.  There was suggestion to test the application's performanc
 * A lot of the queries can be optmized.  I don't personally think the increase in performance would be noticiable, but there's room for improvement.
 
 * In a production environment the data isn't likely to change often, it would be far more convenient to spin a local MongoDB server and have the application hosted in the same space as that server.  I haven't looked much into it, but I think AWS provides that capability.  An alternative is to Dockerize the application as well, that way we can deplay a packaged application that is sure to contain all these features independent of platform (I wish I had thought of this approach before).
-
-## Testing
-
-
-A testing framework (anagram_client.rb) and a test suite(anagram_test.rb) were provided.  I've spoken about it before, but because Ruby runs synchronously and Node runs asynchronously, the tests are very inconsistent.  Running the test multiple times with no changes to the test nor the application yields different results a lot of the time.  What I did to mitigate that issue was making the Ruby test to wait a few seconds after a request in an attempt to let it complete properly.  That added a bit of consistency, but not enough to do away with all problems.  
-
-Consider the following scenario that shows up in the tests: 
-- Ruby test sends a POST request to post 3 words to the corpus
-- Node app receives the request and starts working on it
-- Ruby test sends a request to GET the 3 words in the corpus
-- Node app is still working on the post request, not all words have been posted yet, but Node does receive the second request and completes it before the post request
-- Ruby receives the response for the GET request.  At the time the request was made, only two words were in the corpus.  The GET request returned 2 words, instead of 3.
-
-Yes.  Most of the time, waiting a little bit between requests will do away with this problem, but for tests with multiple requests, it's hard to achieve some control.  That being said, I had all my tests pass a lot of the time.  So for the purposes of testing, whenever the race conditions are overcome, the application is compliant with all tests.  The application is "correct" and passes all tests.
-
-PS: I found what I consider to be an error in the tests, and here, I felt free to modify it.  At work, I'd connect with the person who wrote the test first and check with them before suggesting the correction.
