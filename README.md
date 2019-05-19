@@ -4,7 +4,7 @@ Anagramma is a web api created to perform operations related to anagrams.  From 
 
 root endpoint: ```https://anagramma.herokuapp.com/```
 
-An alternative version with 170,000+ words exists here: ```https://anagramma2.herokuapp.com/``` *the DELETE all words route is disabled on this version, but it's a lot better for visualizing /stats/
+An alternative version with 170,000+ words exists here: ```https://anagramma2.herokuapp.com/``` *the DELETE all words route is disabled on this version, but it's a lot better for visualizing /stats/, check it out!
 
 ## Table of Contents
 - [How to use it](#How-to-use-it)
