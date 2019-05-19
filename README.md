@@ -35,6 +35,14 @@ Access the following endpoints with the following HTTP Requests:
 - `GET https://anagramma.herokuapp.com/stats/min.json`: returns the smallest word in the database.
 - `GET https://anagramma.herokuapp.com/stats/max.json`: returns the biggest word in the database.
 
+To run the app locally:
+```
+1. *git clone* the repo.
+2. navigate to the root directory and *npm install*.
+3. Fill in the <username> and <password> in the /config/keys.js file with either the credentials I've given you, or your own MongoDB credentials
+4. *npm run dev* or *npm start*
+```
+
 
 ## Architecture
 
@@ -118,21 +126,18 @@ Another challenge was writing the queries for the additional features.  I hadn't
 
 I also spent a lot of time dealing with Heroku's hosting issues.  I wanted to use environment variables for my credentials, but Heroku doesn't have a plugin for MongoDB Atlas -they do have one for mLab.  I figured that out and now everything works smoothly.  
 
-I still wanted to provide a way to run the app locally, so in the end I had to expose my credentials -which I understand is the worst practice, but I would never do in a production environment.  I created one just for the project and it's safe to share.  Another option would be to containerize the application and I might still do it in the future.
-
 ## What I would do different in a production environment
 
-* First of all, credentials.  This project does demonstrate the solution of using environment variables from the server (end users are oblivious to the credentials).  Again, I just wanted to make sure others could run it locally too.
 
-* One of the tests expects the wrong output.  Here I modified it myself.  Professionally, I would reach out to whoever wrote the test to make sure I didn't miss anything in the assertion.
+* One of the tests expects the wrong output.  It works sometimes and sometimes it doesn't.  The reason why: Ruby is synchronous, and if the server/db stalls a little bit, there's a chance one of the assertion will be made before the last word is inserted.  Here I can modify the test myself.  Professionally, I would reach out to whoever wrote the test to make sure I didn't miss anything in the assertion.
 
 * I might not have chosen the tech stack I chose.  Here, in isolation, I chose the tech stack by myself.  At a professional setting I would never do that.  I would leverage the knowledge of the team, and their ideas.  We would reach a decision together.
 
-* I would work in sprints.  I worked through an entire week and did this.  Sure, I had a little scrum board to organize myself.  At the same time
+* I would work in sprints.  I worked through an entire week and did this.  Sure, I had a little scrum board to organize myself.  The process is different though.
 
-* I would reach out for help in writing some of the promises.  Some of the asynchronous calls really bent my head when trying to debug it.  I would have asked for help from someone who knows more about it.
+* I would reach out for help in writing some of the promises.  I'm happy with the final model that I consistently used across all functions.  At the same time, it took me quite some time to achieve it.  Some of the asynchronous calls really bent my head when trying to debug it -especially when then involved multiple CRUD operations.  I would have asked for help from someone who knows more about it.
 
-* I would write more tests.
+* I would write more tests.  And more importantly, I would write them in JavaScript so I can take into account asynchronous quirks.
 
 ## Future Features
 
