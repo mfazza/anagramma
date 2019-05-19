@@ -40,7 +40,7 @@ app.post('/words.json', words.insert);
 //  ARGS: none
 //  RES: 204 or 404 codes
 //  Maps to 'dropAll in ../routes/api/words.js
-app.delete('/words.json', words.dropAll);
+//  app.delete('/words.json', words.dropAll);
 
 //  DELETE route to delete all words from the corpus
 //  ARGS: word to be deleted as in '/words/wordtobedeleted.json'
