@@ -4,9 +4,12 @@ Anagramma is a web api created to perform operations related to anagrams.  From 
 
 root endpoint: ```https://anagramma.herokuapp.com/```
 
+An alternative version with 170,000+ words exists here: ```https://anagramma2.herokuapp.com/``` *the DELETE all words route is disabled on this version, but it's a lot better for visualizing /stats/
+
 ## Table of Contents
 - [How to use it](#How-to-use-it)
 - [Architecture](#Architecture)
+- [Tech Stack](#Tech-Stack)
 - [Project Structure](#Project-Structure)
 - [Requirements](#Requirements)
 - [Approach](#Approach)
@@ -15,7 +18,8 @@ root endpoint: ```https://anagramma.herokuapp.com/```
 - [Project Management](#Project-Management)
 - [Challenges](#Challenges)
 - [What I would do differently in a professional environment](#What-I-would-do-differently-in-a-professional-environment)
-- [Future-Features](#Future-Features]
+- [Future-Features](#Future-Features)
+- [Testing] (#Testing)
 
 ## How to use it
 
@@ -56,6 +60,15 @@ anagrams: ['radar']
 
 *For the longest time I was using a function to create a unique hash for every word, but in the end I realized that having the letters that compose the word unscrambled was unique enough.
 
+
+## Tech Stack
+
+* Node.js
+  * Express framework
+  * MongoDB Core Driver
+* MongoDB
+* Ruby (for testing)
+* GitHub (for source control)
 
 ## Project Structure
 
@@ -101,9 +114,9 @@ My original idea was to save everything in memory since we're only dealing with 
   
 ## Trade-offs
 
-Writing the application in Node is comfortable.  The Express framework allowed me to focus on the logic and not so much on verbose syntax.  At the same time, I was given tests in Ruby.  Ruby is a synchronous language and the tests run synchronously.  JavaScript (and subsequently Node) is an asynchronous language, so some additional set up and adjustments were necessary to make the tests run properly.  It was challenging to master promises and asynchronous programming for this as well, but I feel my Node skills are sharper than ever after this.
+Writing the application in Node is fit for the web.  The way JavaSript deals with JSON data made it really convenient.  At the same time, I was given tests in Ruby.  Ruby is a synchronous language and the tests run synchronously.  JavaScript (and subsequently Node) is an asynchronous language, so some additional set up and adjustments were necessary to make the tests run properly.  It was challenging to master promises and asynchronous programming for this as well, but I feel my Node skills are sharper than ever after this.
 
-Another point of trade-off is the data store itself.  Consuming words, converting them to a seuqnece of characters, and inserting them into the database is extremely slow in comparisson to using the memory.  In a production environment where all the words would already be in the store, inserting fast wouldn't be as important.  The database also adds another layer of complexity.  That is a good and a bad thing.  This layer of complexity offers flexibility and a lot of room to expand the project, the data store limits the project in that sense -although it's much simpler to deal with.  The database also requires a provider, and another network point that needs to be considered. 
+Another point of trade-off is the data store itself.  Consuming words, converting them to a sequence of characters, and inserting them into the database is extremely slow in comparisson to using the memory.  In a production environment where all the words would already be in the store, inserting fast wouldn't be as important.  The database also adds another layer of complexity.  That is a good and a bad thing.  This layer of complexity offers flexibility and a lot of room to expand the project, the data store limits the project in that sense -although it's much simpler to deal with.  The database also requires a provider, and another network point that needs to be considered. 
 
 ## Project Tools
 
@@ -126,7 +139,11 @@ Another challenge was writing the queries for the additional features.  I hadn't
 
 I also spent a lot of time dealing with Heroku's hosting issues.  I wanted to use environment variables for my credentials, but Heroku doesn't have a plugin for MongoDB Atlas -they do have one for mLab.  I figured that out and now everything works smoothly.  
 
-## What I would do different in a production environment
+Testing with the tests provided in Ruby was tricky.  Tests will often fail because of the asynchronous nature of the application.  It's common for the test to attempt to delete a word that hasn't been inserted yet, or expect a reponse about a query that hasn't been posted yet.
+
+Using benchmark-bigo.  There was suggestion to test the application's performance, but that turned out to take more time than I had.
+
+## What I would do differently in a production environment
 
 
 * One of the tests expects the wrong output.  It works sometimes and sometimes it doesn't.  The reason why: Ruby is synchronous, and if the server/db stalls a little bit, there's a chance one of the assertion will be made before the last word is inserted.  Here I can modify the test myself.  Professionally, I would reach out to whoever wrote the test to make sure I didn't miss anything in the assertion.
@@ -141,3 +158,33 @@ I also spent a lot of time dealing with Heroku's hosting issues.  I wanted to us
 
 ## Future Features
 
+
+* This is a great scalable tool.  I actually want to make this project into "an official" one.  What the application is lacking is a convenient way to deal with the application.  For that I had two ideas: a React front-end and an Alexa app.  As soon as I have time, I would like to work on these.
+
+* I did invest a bit of time into the additional features because I am hopeful I'll get to build more on top of this.  A great way to show that would be using [D3.js](https://d3js.org/).
+
+* Not all features should be available to all users.  All the deletes should only be available for users with credentials.  A credential system (passport framework for example) needs to be put in place to address that.
+
+* The way the collection is set up in MongoDB makes it really easy to add other languages.  The API is ready, all it needs to do is a new collection with a new language.
+
+* More tests.  Not really a feature, but it's too important not to be included.  This project needs appropriate testing written to respect the asynchronous nature of the application.
+
+* A lot of the queries can be optmized.  I don't personally think the increase in performance would be noticiable, but there's room for improvement.
+
+* In a production environment the data isn't likely to change often, it would be far more convenient to spin a local MongoDB server and have the application hosted in the same space as that server.  I haven't looked much into it, but I think AWS provides that capability.  An alternative is to Dockerize the application as well, that way we can deplay a packaged application that is sure to contain all these features independent of platform (I wish I had thought of this approach before).
+
+## Testing
+
+
+A testing framework (anagram_client.rb) and a test suite(anagram_test.rb) were provided.  I've spoken about it before, but because Ruby runs synchronously and Node runs asynchronously, the tests are very inconsistent.  Running the test multiple times with no changes to the test nor the application yields different results a lot of the time.  What I did to mitigate that issue was making the Ruby test to wait a few seconds after a request in an attempt to let it complete properly.  That added a bit of consistency, but not enough to do away with all problems.  
+
+Consider the following scenario that shows up in the tests: 
+- Ruby test sends a POST request to post 3 words to the corpus
+- Node app receives the request and starts working on it
+- Ruby test sends a request to GET the 3 words in the corpus
+- Node app is still working on the post request, not all words have been posted yet, but Node does receive the second request and completes it before the post request
+- Ruby receives the response for the GET request.  At the time the request was made, only two words were in the corpus.  The GET request returned 2 words, instead of 3.
+
+Yes.  Most of the time, waiting a little bit between requests will do away with this problem, but for tests with multiple requests, it's hard to achieve some control.  That being said, I had all my tests pass a lot of the time.  So for the purposes of testing, whenever the race conditions are overcome, the application is compliant with all tests.  The application is "correct" and passes all tests.
+
+PS: I found what I consider to be an error in the tests, and here, I felt free to modify it.  At work, I'd connect with the person who wrote the test first and check with them before suggesting the correction.
