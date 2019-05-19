@@ -6,7 +6,7 @@ root endpoint: ```https://anagramma.herokuapp.com/```
 
 ## Table of Contents
 - [How to use it](#How-to-use-it)
-- [Architecture & Design](#Architecture-&-Design)
+- [Architecture](#Architecture)
 - [Project Structure](#Project-Structure)
 - [Requirements](#Requirements)
 - [Approach](##Approach)
@@ -35,7 +35,7 @@ Access the following endpoints with the following HTTP Requests:
 - `GET https://anagramma.herokuapp.com/stats/max.json`: returns the biggest word in the database.
 
 
-## Architecture & Design
+## Architecture
 
 This Node application uses the Express framework to set up routes that are used as endpoints.  Requests made to the endpoints get processed by the Node application that queries an instance of MongoDB and returns the results as JSON responses.
 
