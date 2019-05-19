@@ -1,5 +1,7 @@
 const db = require('../../server/servertools');
 
+/* All functions follow the same model: they return a promise upon performing a CRUD operation in the database. */
+
 function getMostAnagrams() {
     return new Promise(function (resolve, reject) {
         db.getMongo().db(db.dbName).collection(db.colName).aggregate([
@@ -49,6 +51,11 @@ function deleteWordAndAnagrams(wordFromReq) {
 
 }
 
+/*  Each function below, receives req from the endpoint described in server.js,
+    then they call one of the functions above.  The functions above return promises.
+    Upon receiving the promise resolution, they'll return the HTTP status code along with a response.
+*/
+
 exports.most = (req, res) => {
     getMostAnagrams()
         .then((resolution) => res.status(200).send({ "Words with most anagrams": resolution[0]['anagrams'] }))
@@ -73,6 +80,11 @@ exports.wAtLeast = (req, res) => {
 exports.get = (req, res) => {
 
     let combination = req.params.word.unscramble()
+
+    //if limit exits and proper exists: limit the size and remove proper nouns from response
+    //else if limit exists: limit the size of the response
+    //else if proper exists: remove all proper nouns from response
+    //else send a regular response
 
     if (req.query.limit != undefined && req.query.proper != undefined) {
         queryMongoDB({ "combination": combination })

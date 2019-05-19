@@ -1,5 +1,7 @@
 const db = require('../../server/servertools');
 
+/* All functions follow the same model: they return a promise upon performing a CRUD operation in the database. */
+
 function countTotalWords() {
     return new Promise(function (resolve, reject) {
         db.getMongo().db(db.dbName).collection(db.colName).aggregate([
@@ -55,6 +57,11 @@ function getMaxLength() {
         )
     })
 }
+
+/*  Each function below, receives req from the endpoint described in server.js,
+    then they call one of the functions above.  The functions above return promises.
+    Upon receiving the promise resolution, they'll return the HTTP status code along with a response.
+*/
 
 exports.totalWords = (req, res) => {
     countTotalWords()

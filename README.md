@@ -21,6 +21,7 @@ root endpoint: ```https://anagramma.herokuapp.com/```
 
 Access the following endpoints with the following HTTP Requests: 
 
+- `GET https://anagramma.herokuapp.com/words.json`: points the user to this page.
 - `POST https://anagramma.herokuapp.com/words.json`: takes in a JSON array to be added to the database.
 - `DELETE https://anagramma.herokuapp.com/words.json`: this will delete all words from the database.
 - `DELETE https://anagramma.herokuapp.com/words/:word.json`: this will delete a particular word from the database.

@@ -9,7 +9,7 @@ const stats = require('../routes/api/stats');
 
 const app = express();
 app.use(express.json());
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 3000; //if not running on heroku, use port 3000
 
 //MongoDB connection
 db.connect()
@@ -25,6 +25,10 @@ app.listen(PORT, () => {
 });
 
 
+//  GET route that explains how to use the API
+//  ARGS: none
+//  RES: 200 -> {message: "Documentation for this API is available at https://github.com/mattfazza/anagramma/"}
+app.get('/', (req, res) => res.status(200).send({ message: "Documentation for this API is available at https://github.com/mattfazza/anagramma/" }));
 
 //  POST route to insert words into the corpus 
 //  ARGS: json array such as { "json": ["read", "dear", "dare"] } included in the body of the request

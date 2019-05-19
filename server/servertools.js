@@ -7,12 +7,10 @@ exports.dbName = dbName;
 exports.colName = colName
 
 var uri = process.env.MONGODB_URI || keys.mongoURI;
-//console.log(uri);
 
 let connection = null;
 
 var options = {
-
     poolSize: 50,
     reconnectTries: 2,
     auto_reconnect: true,
@@ -28,6 +26,7 @@ module.exports.connect = () => new Promise((resolve, reject) => {
     });
 });
 
+//instead of creating a connection for every operation, the getMongo() function will return an instance of the connection pool
 var getMongo = exports.getMongo = () => {
     if (connection == null) {
         connect()
@@ -35,6 +34,7 @@ var getMongo = exports.getMongo = () => {
     return connection;
 }
 
+//added this method as part of string prototype to make the application more readable. This is the function that unscrambles the words.  I.E.: "radar".unscramble() == "aadrr"
 exports.unscramble = String.prototype.unscramble = function () {
     return this.toLowerCase().split("").sort().join("")
 }
