@@ -31,7 +31,7 @@ Access the following endpoints with the following HTTP Requests:
 - `DELETE https://anagramma.herokuapp.com/words/:word.json`: this will delete a particular word from the database.
 - &ast; `GET https://anagramma.herokuapp.com/anagrams/most.json`: this will retrieve the words with most anagrams. 
 - &ast; `GET https://anagramma.herokuapp.com/anagrams/minimumnumber.json?atleast=5'`: this will get words with at least the number specified in the argument. 
-- `GET https://anagramma.herokuapp.com/anagrams/:word.json`: this will get anagrams for a particular word in the database.
+- `GET https://anagramma.herokuapp.com/anagrams/:word.json`: this will get anagrams for a particular word in the database.  Additional params: "limit" for limiting the amount of results, and "proper" for excluding proper nouns.
 - &ast; `POST https://anagramma.herokuapp.com/anagrams/words.json`: takes in a JSON array of words and checks if they are all anagrams of each other. 
 - &ast; `DELETE https://anagramma.herokuapp.com/anagrams/:word.json`: deletes a word and all its anagrams from the database. 
 - &ast; `GET https://anagramma.herokuapp.com/stats/total.json`: returns the total amount of words in the database. 
