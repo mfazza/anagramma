@@ -19,14 +19,14 @@ An alternative version with 170,000+ words exists here: ```https://anagramma2.he
 - [Challenges](#Challenges)
 - [What I would do differently in a professional environment](#What-I-would-do-differently-in-a-professional-environment)
 - [Future-Features](#Future-Features)
-- [Testing] (#Testing)
+- [Testing](#Testing)
 
 ## How to use it
 
 Access the following endpoints with the following HTTP Requests: 
 
-- `GET https://anagramma.herokuapp.com/words.json`: points the user to this page.
-- `POST https://anagramma.herokuapp.com/words.json`: takes in a JSON array to be added to the database.
+- `GET https://anagramma.herokuapp.com/`: points the user to this page.
+- `POST https://anagramma.herokuapp.com/words.json`: takes in a JSON array to be added to the database.  Array limit is about 8150 (8162 is the maximum I was able to insert at once)
 - `DELETE https://anagramma.herokuapp.com/words.json`: this will delete all words from the database.
 - `DELETE https://anagramma.herokuapp.com/words/:word.json`: this will delete a particular word from the database.
 - `GET https://anagramma.herokuapp.com/anagrams/most.json`: this will retrieve the words with most anagrams.
@@ -47,6 +47,12 @@ To run the app locally:
 4. *npm run dev* or *npm start*
 ```
 
+To run tests locally:
+```
+1. Navigate to /tests
+2. Download the Gems in the imports
+3. ruby anagram_test.rb
+```
 
 ## Architecture
 
@@ -78,6 +84,7 @@ There are two main folders in the project: *server* and *routes*.
   * anagrams contains all methods associated with routes under /anagrams/
   * words contains all methods associated with routes under /words/
   * stats contains all methods associated with routes under /stats/
+* platform_dev has the assets I was given to start with.
 
 An endpoint request calls the Node app in /server -> that calls an export module in /routes/api/ -> that calls a function that queries the db (in the same file)
 
@@ -127,9 +134,11 @@ Another point of trade-off is the data store itself.  Consuming words, convertin
 
 ## Project Management
 
-Although I wrote this by myself, I had to be organized in order to get everything done.  Once I figured out what technology I wanted to use, I immediately broke down the project in accomplishable chunks.  I made a little scrum board for myself on Trello and worked on those "user stories".  I gave myself a week to complete this, but I couldn't work on it all the time.  It was crucial having the board to guide me through the development process.  Commits related to the stories can be found in the comments of those stories.
+Although I wrote this by myself, I had to be organized in order to get everything done.  Once I figured out what technology I wanted to use, I immediately broke down the project in accomplishable chunks.  I made a little scrum board for myself on Trello and worked on those "user stories".  I gave myself a week to complete this, but I couldn't work on it all the time.  It was helpful having the board to guide me through the development process.  Commits related to the stories can be found in the comments of those stories.
 
 The version control model I chose is Trunk based since I was the only person working on the project. 
+
+The little scrum board (more similar to a kanban board) can be found [here](https://trello.com/b/Vc4MRw1S/anagramma).
 
 ## Challenges
 
@@ -141,7 +150,7 @@ I also spent a lot of time dealing with Heroku's hosting issues.  I wanted to us
 
 Testing with the tests provided in Ruby was tricky.  Tests will often fail because of the asynchronous nature of the application.  It's common for the test to attempt to delete a word that hasn't been inserted yet, or expect a reponse about a query that hasn't been posted yet.
 
-Using benchmark-bigo.  There was suggestion to test the application's performance, but that turned out to take more time than I had.
+Using benchmark-bigo.  There was suggestion to test the application's performance, but that turned out to take more time than I had, so I ended up not testing the performance.  I really wish I could have used it.
 
 ## What I would do differently in a production environment
 
@@ -154,7 +163,9 @@ Using benchmark-bigo.  There was suggestion to test the application's performanc
 
 * I would reach out for help in writing some of the promises.  I'm happy with the final model that I consistently used across all functions.  At the same time, it took me quite some time to achieve it.  Some of the asynchronous calls really bent my head when trying to debug it -especially when then involved multiple CRUD operations.  I would have asked for help from someone who knows more about it.
 
-* I would write more tests.  And more importantly, I would write them in JavaScript so I can take into account asynchronous quirks.
+* I would write more tests.  And more importantly, I would write them in JavaScript so I can take into account asynchronous quirks.  More tests will allow me to debug the application better, and optmize and figure out interesting corner cases.
+
+* Write benchmark tests.  If someone knows how to use it properly, I'd love to talk to them!
 
 ## Future Features
 
