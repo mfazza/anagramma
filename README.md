@@ -9,13 +9,13 @@ root endpoint: ```https://anagramma.herokuapp.com/```
 - [Architecture](#Architecture)
 - [Project Structure](#Project-Structure)
 - [Requirements](#Requirements)
-- [Approach](##Approach)
-- [Trade-offs](##Trade-offs)
-- [Project-Tools](##Project-tools)
-- [Project Management](##Project-Management)
-- [Challenges](##Challenges)
-- [What I would do differently in a professional environment](##What-I-would-do-differently-in-a-professional-environment)
-- [Future-Features](##Future-Features]
+- [Approach](#Approach)
+- [Trade-offs](#Trade-offs)
+- [Project-Tools](#Project-tools)
+- [Project Management](#Project-Management)
+- [Challenges](#Challenges)
+- [What I would do differently in a professional environment](#What-I-would-do-differently-in-a-professional-environment)
+- [Future-Features](#Future-Features]
 
 ## How to use it
 
@@ -119,7 +119,7 @@ I also spent a lot of time dealing with Heroku's hosting issues.  I wanted to us
 
 I still wanted to provide a way to run the app locally, so in the end I had to expose my credentials -which I understand is the worst practice, but I would never do in a production environment.  I created one just for the project and it's safe to share.  Another option would be to containerize the application and I might still do it in the future.
 
-## What would I do different in a production environment
+## What I would do different in a production environment
 
 * First of all, credentials.  This project does demonstrate the solution of using environment variables from the server (end users are oblivious to the credentials).  Again, I just wanted to make sure others could run it locally too.
 
