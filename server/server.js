@@ -27,7 +27,7 @@ app.listen(PORT, () => {
 
 
 //  POST route to insert words into the corpus 
-//  ARGS: json array such as{ "json": ["read", "dear", "dare"] } included in the body of the request
+//  ARGS: json array such as { "json": ["read", "dear", "dare"] } included in the body of the request
 //  RES: 201 or 404 codes
 //  Maps to 'insert' in ../routes/api/words.js
 app.post('/words.json', words.insert);
