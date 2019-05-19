@@ -47,7 +47,7 @@ To run the app locally:
 ```
 1. *git clone* the repo.
 2. navigate to the root directory and *npm install*.
-3. Fill in the <username> and <password> in the /config/keys.js file with either the credentials I've given you, or your own MongoDB credentials
+3. Fill in the uri string in /config/keys.js with the credentials I've given you, or your own MongoDB credentials
 4. *npm run dev* or *npm start*
 ```
 
