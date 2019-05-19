@@ -54,7 +54,7 @@ app.delete('/words/:word.json', words.dropOne);
 //  ARGS: none
 //  RES: 200 -> { "Words with most anagrams": ['read', 'dare', 'dear'] } OR 404 code
 //  Maps to 'most' in ../routes/api/anagrams.js
-app.get('/anagrams/most.json', anagrams.most);
+app.get('/anagrams/mostanagrams.json', anagrams.most);
 
 //  GET route to retrieve words with a certain minimum number of anagrams
 //  ARGS: atleast parameter in url as in '/anagrams/minimum.json?atleast=2'

@@ -78,7 +78,7 @@ exports.average = (req, res) => {
 exports.min = (req, res) => {
     getMinLength()
         .then((resolution) => res.status(200).send({
-            "Maximum word length": resolution[0]["minLength"],
+            "Minimum word length": resolution[0]["minLength"],
             "Word": resolution[0]["anagrams"]
         }))
         .catch(err => res.status(404).send())

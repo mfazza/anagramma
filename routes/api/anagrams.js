@@ -137,16 +137,15 @@ exports.dropMatchingAnagrams = (req, res) => {
 
 exports.checkIfAnagrams = (req, res) => {
     //rewrite with try catch to add 404
-    var hash = 0;
+    var comb = "";
     for (var i = 0; i < req.body.words.length; i++) {
-        let currentWord = req.body.words[i];
-        let currentHash = currentWord.toLowerCase().split("").sort().join("").hashCode()
+        let combination = req.body.words[i].unscramble()
 
-        if (i != 0 && currentHash != hash) {
+        if (i != 0 && combination != comb) {
             res.status(200).send({ message: "The words sent are not all anagrams of each other." })
             break;
         }
-        hash = currentHash;
+        comb = combination;
     }
     res.status(200).send({ message: "The words sent are all anagrams of each other." })
 }
