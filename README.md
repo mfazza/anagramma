@@ -173,7 +173,7 @@ Testing with the tests provided in Ruby was tricky.  Tests will often fail becau
 
 Using benchmark-bigo.  There was suggestion to test the application's performance, but that turned out to take more time than I had, so I ended up not testing the performance.  I really wish I could have used it.
 
-## What I would do differently in a production environment
+## What I would do differently in a professional environment
 
 
 * One of the tests expects the wrong output.  It works sometimes and sometimes it doesn't.  The reason why: Ruby is synchronous, and if the server/db stalls a little bit, there's a chance one of the assertion will be made before the last word is inserted.  Here I can modify the test myself.  Professionally, I would reach out to whoever wrote the test to make sure I didn't miss anything in the assertion.
