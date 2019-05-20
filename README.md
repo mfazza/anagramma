@@ -34,7 +34,7 @@ Access the following endpoints with the following HTTP Requests:
 
 **Optional Features**
 - `GET https://anagramma.herokuapp.com/`: points the user to this page. 
-- `GET https://anagramma.herokuapp.com/anagrams/most.json`: this will retrieve the words with most anagrams. 
+- `GET https://anagramma.herokuapp.com/anagrams/mostanagrams.json`: this will retrieve the words with most anagrams. 
 - `GET https://anagramma.herokuapp.com/anagrams/minimumnumber.json?atleast=5'`: this will get words with at least the number specified in the argument. 
 - `POST https://anagramma.herokuapp.com/anagrams/words.json`: takes in a JSON array of words and checks if they are all anagrams of each other. 
 - `DELETE https://anagramma.herokuapp.com/anagrams/:word.json`: deletes a word and all its anagrams from the database. 
