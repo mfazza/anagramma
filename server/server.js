@@ -31,7 +31,7 @@ app.listen(PORT, () => {
 app.get('/', (req, res) => res.status(200).send({ message: "Documentation for this API is available at https://github.com/mattfazza/anagramma/" }));
 
 //  POST route to insert words into the corpus 
-//  ARGS: json array such as { "json": ["read", "dear", "dare"] } included in the body of the request
+//  ARGS: json array such as { "words": ["read", "dear", "dare"] } included in the body of the request
 //  RES: 201 or 404 codes
 //  Maps to 'insert' in ../routes/api/words.js
 app.post('/words.json', words.insert);
@@ -100,3 +100,6 @@ app.get('/stats/min.json', stats.min);
 //  ARGS: none
 //  RES: 200 -> { "Maximum word length": 6, "Word": "pneumonoultramicroscopicsilicovolcanoconiosis" } OR 404
 app.get('/stats/max.json', stats.max);
+
+
+module.exports = app; //for testing
