@@ -2,6 +2,7 @@
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var should = chai.should();
+var assert = require('chai').assert;
 
 var server = require('../server/server.js');
 var servertools = require('../server/servertools');
@@ -74,6 +75,23 @@ describe('Run tests', function () {
             })//end of 'test_fetching_anagrams_with_limit
 
 
+            describe('test_fetch_for_word_with_no_anagrams', () => {
+                it('should receive an empty json array', (done) => {
+                    chai
+                        .request(server)
+                        .get('/anagrams/zyxwv.json')
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            res.body.should.be.a('object');
+                            res.body["anagrams"].length.should.be.eql(0); //should throw an error because Mocha sees empty json array as undefined
+                            done();
+                        })
+
+                })
+
+
+
+            })
 
         });
     })
