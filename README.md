@@ -76,6 +76,7 @@ anagrams: ['radar']
 * Node.js
   * Express framework
   * MongoDB Core Driver
+* Mocha/Chai/Supertest
 * MongoDB
 * Ruby (for testing)
 * GitHub (for source control)
@@ -150,9 +151,7 @@ PS: I found what I consider to be an error in the tests, and here, I felt free t
 
 ## Project Management
 
-Although I wrote this by myself, I had to be organized in order to get everything done.  Once I figured out what technology I wanted to use, I immediately broke down the project in accomplishable chunks.  I made a little scrum board for myself on Trello and worked on those "user stories".  I gave myself a week to complete this, but I couldn't work on it all the time.  It was helpful having the board to guide me through the development process.  Commits related to the stories can be found in the comments of those stories.
-
-The version control model I chose is Trunk based since I was the only person working on the project. 
+Although I wrote this by myself, I had to be organized in order to get everything done.  Once I figured out what technology I wanted to use, I immediately broke down the project in accomplishable chunks.  I made a little scrum board for myself on Trello and worked on those "user stories".  I gave myself a week to complete this, but I couldn't work on it all the time.  It was helpful having the board to guide me through the development process.  Commits related to the stories can be found in the comments of those stories. 
 
 The little scrum board (more similar to a kanban board) can be found [here](https://trello.com/b/Vc4MRw1S/anagramma).
 
@@ -164,7 +163,10 @@ Another challenge was writing the queries for the additional features.  I hadn't
 
 I also spent a lot of time dealing with Heroku's hosting issues.  I wanted to use environment variables for my credentials, but Heroku doesn't have a plugin for MongoDB Atlas -they do have one for mLab.  I figured that out and now everything works smoothly.  
 
+```
 Testing with the tests provided in Ruby was tricky.  Tests will often fail because of the asynchronous nature of the application.  It's common for the test to attempt to delete a word that hasn't been inserted yet, or expect a reponse about a query that hasn't been posted yet.
+```
+The above is not true. I do think it's a better idea to write tests with Mocha/Chai to have the ability to be granular in detail regarding the promises and callbacks.
 
 Using benchmark-bigo.  There was suggestion to test the application's performance, but that turned out to take more time than I had, so I ended up not testing the performance.  I really wish I could have used it.
 
