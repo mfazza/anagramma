@@ -2,10 +2,11 @@
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var should = chai.should();
-var assert = require('chai').assert;
+
 
 var server = require('../server/server.js');
 var servertools = require('../server/servertools');
+
 
 
 chai.use(chaiHttp);
@@ -83,27 +84,36 @@ describe('Run tests', function () {
                         .end((err, res) => {
                             res.should.have.status(200);
                             res.body.should.be.a('object');
-                            res.body["anagrams"].length.should.be.eql(0); //should throw an error because Mocha sees empty json array as undefined
+                            res.body["anagrams"].length.should.be.eql(0);
                             done();
                         })
-
                 })
+            })
+        })
 
-
-
+        describe('test_deleting_all_words', () => {
+            it('should fetch an empty body', function () {
+                return chai
+                    .request(server)
+                    .delete('/words.json')
+                    .then(function (response) {
+                        response.should.have.status(204);
+                        return chai
+                            .request(server)
+                            .get('/anagrams/read.json')
+                            .then(function (res) {
+                                res.should.have.status(200);
+                                res.body.should.be.a('object');
+                                res.body["anagrams"].length.should.be.eql(0);
+                            }, function (err) {
+                                console.log(err);
+                            })
+                    }, function (error) { console.log(error); })
             })
 
-        });
+
+
+
+        })
     })
-
-
-
-
-
-
-
-
-
-
-});
-
+})

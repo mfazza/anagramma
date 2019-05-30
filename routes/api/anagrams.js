@@ -115,7 +115,7 @@ exports.get = (req, res) => {
         queryMongoDB({ "combination": combination })
             .then((resolution) => res.status(200).send({ anagrams: resolution[0]['anagrams'].sort() }))
             .catch(err => {
-                console.log(err)
+                // console.log(err)
                 res.status(200).send({ anagrams: [] })
             })
     }
