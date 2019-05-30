@@ -130,17 +130,13 @@ Another point of trade-off is the data store itself.  Consuming words, convertin
 
 ## Testing
 
-
+```
 A testing framework (anagram_client.rb) and a test suite(anagram_test.rb) were provided.  I've spoken about it before, but because Ruby runs synchronously and Node runs asynchronously, the tests are very inconsistent.  Running the test multiple times with no changes to the test nor the application yields different results a lot of the time -I included a screenshot of that scenario under /img/tests.  What I did to mitigate that issue was making the Ruby test to wait a few seconds after a request in an attempt to let it complete properly.  That added a bit of consistency, but not enough to do away with all problems.  
+```
 
-Consider the following scenario that shows up in the tests: 
-- Ruby test sends a POST request to post 3 words to the corpus
-- Node app receives the request and starts working on it
-- Ruby test sends a request to GET the 3 words in the corpus
-- Node app is still working on the post request, not all words have been posted yet, but Node does receive the second request and completes it before the post request
-- Ruby receives the response for the GET request.  At the time the request was made, only two words were in the corpus.  The GET request returned 2 words, instead of 3.
+That's what I thought was going on initially, until I started writing tests with Mocha/Chai.  I started writing tests that respect the asynchronous nature of the application of the application.  What I missed is that Ruby's synchronous nature should work in my favor here.  I got mixed up between sync and async and thought the errors were due to that.  I still think it's a good idea to use Mocha/Chai to test the applications though.  (Having it all being Javascript based would be great for a team).
 
-Yes.  Most of the time, waiting a little bit between requests will do away with this problem, but for tests with multiple requests, it's hard to achieve some control.  That being said, I had all my tests pass a lot of the time.  So for the purposes of testing, whenever the race conditions are overcome, the application is compliant with all tests.  The application is "correct" and passes all tests.  
+The Mocha/Chai tests were great because they revealed something.  The disparity in testing the application is not coming from the testing framework, it's coming from the way the application was written.  The tests with inconsistent results with both Mocha/Chai and Ruby confirmed that the insertion operation isn't atomic when multiple words are inserted at once.  I can think of two solutions for this: use a session during the insertion to make the "three-word insertion" atomic; or rewrite the function that inserts the documents to return the updated document when the last word is inserted.
 
 PS: I found what I consider to be an error in the tests, and here, I felt free to modify it.  At work, I'd connect with the person who wrote the test first and check with them before suggesting the correction.
 

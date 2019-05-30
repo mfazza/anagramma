@@ -2,6 +2,8 @@
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var should = chai.should();
+var expect = chai.expect;
+var request = require('supertest');
 
 
 var server = require('../server/server.js');
@@ -20,27 +22,16 @@ describe('Run tests', function () {
         await servertools.connect().then(function () {
             console.log("db connected");
 
-            //
-            beforeEach((done) => { //Before each test we empty the database
-                chai
-                    .request(server)
-                    .post('/words.json')
-                    .set('content-type', 'application/json')
-                    .send({ words: ["read", "dear", "dare"] })
-                    .end((err, res) => {
-                        res.should.have.status(201);
-                        done();
-                    })
+            beforeEach(async () => {
+                var res = await chai.request(server).post('/words.json').set('content-type', 'application/json').send({ words: ["read", "dear", "dare"] })
+                res.should.have.status(201);
             });
 
-            afterEach((done) => {
-                chai
+            afterEach(async () => {
+                var res = await chai
                     .request(server)
                     .delete('/words.json')
-                    .end((err, res) => {
-                        res.should.have.status(204);
-                        done();
-                    })
+                res.should.have.status(204);
             });
 
 
@@ -92,28 +83,17 @@ describe('Run tests', function () {
         })
 
         describe('test_deleting_all_words', () => {
-            it('should fetch an empty body', function () {
-                return chai
-                    .request(server)
-                    .delete('/words.json')
-                    .then(function (response) {
-                        response.should.have.status(204);
-                        return chai
-                            .request(server)
-                            .get('/anagrams/read.json')
-                            .then(function (res) {
-                                res.should.have.status(200);
-                                res.body.should.be.a('object');
-                                res.body["anagrams"].length.should.be.eql(0);
-                            }, function (err) {
-                                console.log(err);
-                            })
-                    }, function (error) { console.log(error); })
-            })
 
+            it('should return a 204', function (done) {
+                request(server).delete('/words.json').expect(204, function () {
+                    request(server).get('/anagrams/read.json')
+                        .expect(200)
+                        .end((err, res) => { res.body["anagrams"].should.be.eql(0), done })
+                })
+            }
 
-
-
+            )
         })
+
     })
 })
