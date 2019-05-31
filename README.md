@@ -139,6 +139,12 @@ That's what I thought was going on initially, until I started writing tests with
 
 The Mocha/Chai tests were great because they revealed something.  The disparity in testing the application is not coming from the testing framework, it's coming from the way the application was written.  The tests with inconsistent results with both Mocha/Chai and Ruby confirmed that the insertion operation isn't atomic when multiple words are inserted at once.  I can think of two solutions for this: use a session during the insertion to make the "three-word insertion" atomic; or rewrite the function that inserts the documents to return the updated document when the last word is inserted.
 
+Update: as suspected, rewriting the insertion function to use a MongoDB session (MongoDBs operation bundler that makes an atomic transaction out of many operations), and using promises to test the routes, yields a consistent pass in all tests every time.  Look below:
+
+![Mochatest](img/mochatest.png)
+
+
+
 PS: I found what I consider to be an error in the tests, and here, I felt free to modify it.  At work, I'd connect with the person who wrote the test first and check with them before suggesting the correction.
 
 

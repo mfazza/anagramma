@@ -84,12 +84,53 @@ describe('Run tests', function () {
 
         describe('test_deleting_all_words', () => {
 
-            it('should return a 204', function (done) {
-                request(server).delete('/words.json').expect(204, function () {
-                    request(server).get('/anagrams/read.json')
-                        .expect(200)
-                        .end((err, res) => { res.body["anagrams"].should.be.eql(0), done })
+            it('should return an empty array under the key anagrams', async function () {
+                const result = await new Promise(function (resolve) {
+                    chai.request(server).delete('/words.json')
+                        .then(() => chai.request(server).delete('/words.json'))
+                        .then(() => chai.request(server).get('/anagrams/read.json')
+                            .then(function (res) { resolve(res) }
+                            ))
                 })
+
+                result.body["anagrams"].length.should.be.eql(0);
+            }
+
+            )
+        })
+
+
+        describe('test_deleting_all_words_multiple_times', () => {
+
+            it('should return an empty array under the key anagrams', async function () {
+                const result = await new Promise(function (resolve) {
+                    chai.request(server).delete('/words.json')
+                        .then(() => chai.request(server).delete('/words.json'))
+                        .then(() => chai.request(server).delete('/words.json'))
+                        .then(() => chai.request(server).get('/anagrams/read.json')
+                            .then(function (res) { resolve(res) }
+                            ))
+                })
+
+                result.body["anagrams"].length.should.be.eql(0);
+            }
+
+            )
+        })
+
+        describe('test_deleting_a_single_word', () => {
+
+            it('should return an empty array with the words ["dare", "read"]', async function () {
+                const result = await new Promise(function (resolve) {
+                    chai.request(server).delete('/words/dear.json')
+                        .then(() => chai.request(server).get('/anagrams/read.json'))
+                        .then(() => chai.request(server).get('/anagrams/read.json')
+                            .then(function (res) { resolve(res) }
+                            ))
+                })
+                result.should.have.status(200);
+                result.body["anagrams"].length.should.be.eql(2);
+                chai.assert(result.body["anagrams"].sort(), ["dare", "read"]);
             }
 
             )

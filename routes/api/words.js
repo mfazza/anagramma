@@ -55,8 +55,8 @@ exports.insert = async (req, res) => {
     res.status(201).send();
 };
 
-exports.dropAll = (req, res) => {
-    deleteAll()
+exports.dropAll = async (req, res) => {
+    await deleteAll()
         .then((res.status(204).send()))
         .catch(err => res.status(404).send())
 }
